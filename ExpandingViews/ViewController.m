@@ -18,6 +18,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    [self addLongPressGestureToView:_centerView];
 }
 
 
@@ -39,7 +40,7 @@
                      }];
 }
 
-#pragma mark Utility Functions
+#pragma mark - Utility Functions
 - (void) animateBackToOriginalSize
 {
     [UIView animateWithDuration:1
@@ -47,4 +48,38 @@
                          self.centerView.transform = CGAffineTransformIdentity;
                      }];
 }
+
+- (void) animateDepressView
+{
+    [UIView animateWithDuration:0.3
+                     animations:^{
+                         self.centerView.transform = CGAffineTransformMakeScale(0.85, 0.85);
+                     }];
+}
+
+#pragma mark - Long Press Gesture
+- (void) addLongPressGestureToView: (UIView*) theView
+{
+    UILongPressGestureRecognizer *longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self
+                                                                                                             action:@selector(view_longpressed:)];
+    longPressGestureRecognizer.minimumPressDuration = 0.0;
+    [theView addGestureRecognizer:longPressGestureRecognizer];
+}
+
+//These Mimic the apple store home page buttons when one of the tiles are tapped or long pressed.
+- (void) view_longpressed: (UILongPressGestureRecognizer*) recognizer
+{
+    if (recognizer.state == UIGestureRecognizerStateBegan)
+    {
+        [self animateDepressView];
+    }
+    
+    if (recognizer.state == UIGestureRecognizerStateEnded)
+    {
+        [self animateBackToOriginalSize];
+    }
+}
+
+
+
 @end
